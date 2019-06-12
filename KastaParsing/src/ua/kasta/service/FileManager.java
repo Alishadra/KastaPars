@@ -7,17 +7,19 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.nio.file.Files;
 
+import ua.kasta.model.Item;
+
 public class FileManager {
 	
 	private static final String DIR_PATH = getDirPath();
 	
 	
-	public static void writeDataPageServiceToFile(DataPageService dataPageService) throws IOException{
+	public static void writeDataPageServiceToFile(Item item) throws IOException{
 		
 		try (FileWriter wr = new FileWriter(DIR_PATH)) {
 			
 			try {
-				wr.write(String.valueOf(dataPageService));
+				wr.write(String.valueOf(item));
 				wr.flush();
 			} catch (IOException e) {
 				e.printStackTrace();
