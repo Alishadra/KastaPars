@@ -14,31 +14,41 @@ import ua.kasta.model.Item;
 public class DataPageService {
 
 	
-	public static List<String> getItem(String URL) {
+	public static List<Item> getItem(String URL) {
 
 		
-		List<String> item = new ArrayList<>();
-		Item it = new Item();
+		List<Item> items = new ArrayList<>();
 		Document document = null;
 
 		try {
 			document = Jsoup.connect(URL).get();
 
-			it.setImgURL(getImgURL(document));
-			it.setName(getName(document));
-			it.setPrice(getPrice(document));
+			// need collect ALL tags with items
+			
+			Elements itemElements = document.getAllElements(); // wrong, just as example
+
+			for (Element itemElement : itemElements){
+				Item item = new Item();
+
+				item.setImgURL(getImgURL(itemElement));
+				item.setName(getName(itemElement));
+				item.setPrice(getPrice(itemElement));
+
+				// add item to collection
+				items.add(item);
+			}
 
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
 
-		return item;
+		return items;
 
 	}
 
-	private static Integer getPrice(Document document) {
+	private static Integer getPrice(Element itemElement) {
 
-		Elements priceElements = document.getElementsByTag("span");
+		Elements priceElements = itemElement.getElementsByTag("span");
 		for (Element element : priceElements) {
 
 			if (element.hasAttr("class") && element.hasAttr("data-reactid")
@@ -53,9 +63,9 @@ public class DataPageService {
 		return null;
 	}
 
-	private static String getName(Document document) {
+	private static String getName(Element itemElement) {
 
-		Elements nameElements = document.getElementsByTag("img");
+		Elements nameElements = itemElement.getElementsByTag("img");
 		for (Element element : nameElements) {
 			if (element.hasAttr("alt") && element.hasAttr("data-reactid") && element.hasAttr("src")) {
 				return element.attr("alt");
@@ -66,9 +76,9 @@ public class DataPageService {
 		return "";
 	}
 
-	private static String getImgURL(Document document) {
+	private static String getImgURL(Element itemElement) {
 
-		Elements imgElements = document.getElementsByTag("img");
+		Elements imgElements = itemElement.getElementsByTag("img");
 		for (Element element : imgElements) {
 			if (element.hasAttr("alt") && element.hasAttr("data-reactid") && element.hasAttr("src")) {
 				return element.attr("src");

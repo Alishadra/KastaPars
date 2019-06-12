@@ -1,10 +1,11 @@
 package ua.kasta;
 
+import java.io.IOException;
 import java.util.List;
 
 import ua.kasta.model.Item;
-import ua.kasta.multithread.Multithread;
 import ua.kasta.service.DataPageService;
+import ua.kasta.service.FileManager;
 
 public class AppRunner {
 
@@ -13,12 +14,18 @@ public class AppRunner {
 	public static void main(String[] args) {
 		
 		
-		List<String> dataPage = DataPageService.getItem(URL);
-		for (String dataPages : dataPage) {
-			Multithread multithread = new Multithread(dataPage);
-			multithread.start();
+		List<Item> items = DataPageService.getItem(URL);
+		for (Item item : items) {
+			try {
+				FileManager.writeDataPageServiceToFile(item, true);
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
 		}
 		
 	}
 
-}
+		
+		}
+		
+

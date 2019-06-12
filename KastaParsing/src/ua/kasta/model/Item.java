@@ -29,5 +29,10 @@ public class Item {
 	public void setImgURL(String imgURL) {
 		this.imgURL = imgURL;
 	}
+	
+	@Override
+	public String toString() {
+		return name + ", " + price + ", " + imgURL;
+	}
 
 }
