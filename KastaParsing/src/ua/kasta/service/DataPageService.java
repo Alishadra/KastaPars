@@ -13,10 +13,8 @@ import ua.kasta.model.Item;
 
 public class DataPageService {
 
-	
 	public static List<Item> getItem(String URL) {
 
-		
 		List<Item> items = new ArrayList<>();
 		Document document = null;
 
@@ -24,10 +22,10 @@ public class DataPageService {
 			document = Jsoup.connect(URL).get();
 
 			// need collect ALL tags with items
-			
-			Elements itemElements = document.getAllElements(); // wrong, just as example
 
-			for (Element itemElement : itemElements){
+			Elements itemElements = document.getElementsByClass("product__item");
+
+			for (Element itemElement : itemElements) {
 				Item item = new Item();
 
 				item.setImgURL(getImgURL(itemElement));
@@ -54,7 +52,7 @@ public class DataPageService {
 			if (element.hasAttr("class") && element.hasAttr("data-reactid")
 					&& element.attr("class").equals("product_item__new-cost")) {
 				String span = element.text();
-				int price = Integer.parseInt(span);
+				int price = Integer.parseInt(span.replaceAll("\\D", ""));
 				return price;
 			}
 
@@ -77,14 +75,16 @@ public class DataPageService {
 	}
 
 	private static String getImgURL(Element itemElement) {
+		
+			Elements imgElements = itemElement.getElementsByTag("img");
+			for (Element element : imgElements) {
+				if (element.hasAttr("alt") && element.hasAttr("data-reactid") && element.hasAttr("src")) {
+					return element.attr("src");
 
-		Elements imgElements = itemElement.getElementsByTag("img");
-		for (Element element : imgElements) {
-			if (element.hasAttr("alt") && element.hasAttr("data-reactid") && element.hasAttr("src")) {
-				return element.attr("src");
 			}
-
 		}
+
+		
 
 		return "";
 	}
